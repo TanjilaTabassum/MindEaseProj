@@ -190,8 +190,9 @@ const enrollAfterPayment = async (workshopId, seekerId) => {
 // POST /api/payments/success
 exports.paymentSuccess = async (req, res) => {
   try {
-    const tranId = String(req.body.tran_id || "");
-    const valId = String(req.body.val_id || "");
+    const body = req.body || {};
+    const tranId = String(body.tran_id || "");
+    const valId = String(body.val_id || "");
     if (!tranId || !valId) return goTo(res, "/payment/fail?reason=invalid");
 
     const payment = await Payment.findOne({ tranId });
@@ -251,7 +252,8 @@ exports.paymentSuccess = async (req, res) => {
 // POST /api/payments/fail
 exports.paymentFail = async (req, res) => {
   try {
-    const tranId = String(req.body.tran_id || "");
+    const body = req.body || {};
+    const tranId = String(body.tran_id || "");
     if (tranId) {
       await Payment.updateOne({ tranId, status: "pending" }, { status: "failed" });
     }
@@ -265,7 +267,8 @@ exports.paymentFail = async (req, res) => {
 // POST /api/payments/cancel
 exports.paymentCancel = async (req, res) => {
   try {
-    const tranId = String(req.body.tran_id || "");
+    const body = req.body || {};
+    const tranId = String(body.tran_id || "");
     if (tranId) {
       await Payment.updateOne({ tranId, status: "pending" }, { status: "cancelled" });
     }
