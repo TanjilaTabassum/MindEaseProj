@@ -1,9 +1,9 @@
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ChatWindow from "../../components/chat/ChatWindow";
 import Availability from "../../components/Availability";
-import ReferNgoPanel from "../../components/referral/ReferNgoPanel"; // check this path, see below
+import ReferNgoPanel from "../../components/referral/ReferNgoPanel";
+import EscalatePanel from "../../components/escalation/EscalatePanel";
 import { getUserIdFromToken } from "../../utils/getUserId";
 
 const card = {
@@ -23,11 +23,21 @@ const referredBadge = {
   fontWeight: 600,
 };
 
+const escalatedBadge = {
+  backgroundColor: "#bee3f8",
+  color: "#2a4365",
+  padding: "2px 8px",
+  borderRadius: 4,
+  fontSize: 12,
+  fontWeight: 600,
+};
+
 export default function VolunteerDashboard() {
   const [requests, setRequests] = useState([]);
   const [accepted, setAccepted] = useState([]);
   const [chatRequestId, setChatRequestId] = useState(null);
   const [referRequestId, setReferRequestId] = useState(null);
+  const [escalateRequestId, setEscalateRequestId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -86,6 +96,14 @@ export default function VolunteerDashboard() {
     await loadAccepted(); // the case now comes back as "referred"
   };
 
+  // called by EscalatePanel after a successful referral to a psychologist
+  const handleEscalated = async () => {
+    setEscalateRequestId(null);
+    setError("");
+    setMessage("Case referred to the psychologist.");
+    await loadAccepted(); // the case now comes back as "escalated"
+  };
+
   return (
     <div style={{ padding: "2rem", maxWidth: 900 }}>
       <h1>Volunteer Dashboard</h1>
@@ -101,19 +119,31 @@ export default function VolunteerDashboard() {
         <div key={r._id} style={card}>
           <strong>{r.category}</strong> - Urgency: {r.urgency}{" "}
           {r.status === "referred" && <span style={referredBadge}>Referred</span>}
+          {r.status === "escalated" && <span style={escalatedBadge}>Escalated</span>}
           <p>{r.description}</p>
           <small>Submitted: {new Date(r.createdAt).toLocaleDateString()}</small>
 
           <div style={{ marginTop: "0.75rem", display: "flex", gap: "0.5rem" }}>
             <button onClick={() => setChatRequestId(r._id)}>Open chat</button>
             {r.status === "accepted" && (
-              <button
-                onClick={() =>
-                  setReferRequestId(referRequestId === r._id ? null : r._id)
-                }
-              >
-                {referRequestId === r._id ? "Close" : "Refer to NGO"}
-              </button>
+              <>
+                <button
+                  onClick={() => {
+                    setEscalateRequestId(null);
+                    setReferRequestId(referRequestId === r._id ? null : r._id);
+                  }}
+                >
+                  {referRequestId === r._id ? "Close" : "Refer to NGO"}
+                </button>
+                <button
+                  onClick={() => {
+                    setReferRequestId(null);
+                    setEscalateRequestId(escalateRequestId === r._id ? null : r._id);
+                  }}
+                >
+                  {escalateRequestId === r._id ? "Close" : "Refer to psychologist"}
+                </button>
+              </>
             )}
           </div>
 
@@ -124,6 +154,12 @@ export default function VolunteerDashboard() {
                 defaultCategory={r.category}
                 onReferred={handleReferred}
               />
+            </div>
+          )}
+
+          {escalateRequestId === r._id && (
+            <div style={{ marginTop: "1rem", borderTop: "1px solid #eee", paddingTop: "1rem" }}>
+              <EscalatePanel requestId={r._id} onEscalated={handleEscalated} />
             </div>
           )}
         </div>
