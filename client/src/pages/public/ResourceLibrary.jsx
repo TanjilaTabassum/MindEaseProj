@@ -3,71 +3,49 @@ import axios from 'axios';
 
 const ResourceLibrary = () => {
   const [resources, setResources] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  const initialMockData = [
-    {
-      _id: '1',
-      title: 'Coping with Anxiety Guide',
-      category: 'Mental Health',
-      type: 'PDF',
-      description: 'Practical grounding techniques and breathing exercises for acute anxiety.',
-      link: 'https://example.com/anxiety-guide.pdf'
-    },
-    {
-      _id: '2',
-      title: 'Mindfulness Meditation Audio',
-      category: 'Wellness',
-      type: 'Audio',
-      description: '10-minute guided daily meditation for stress reduction.',
-      link: 'https://example.com/meditation.mp3'
-    },
-    {
-      _id: '3',
-      title: 'Understanding Sleep Hygiene',
-      category: 'Lifestyle',
-      type: 'Article',
-      description: 'Scientific tips to improve your sleep cycle and restful sleep.',
-      link: 'https://example.com/sleep-hygiene'
-    }
-  ];
-
   useEffect(() => {
-    fetchResources();
+    loadAll();
   }, []);
 
-  const fetchResources = async () => {
+  const loadAll = async () => {
     try {
-      // The API answers { count, resources }, so res.data itself has no
-      // .length - reading it that way always fell through to the mock data.
-      // The path stays relative so the Vite proxy (and any deployment) works.
-      const res = await axios.get('/api/resources');
-      const fetched = res.data?.resources || [];
-      setResources(fetched.length > 0 ? fetched : initialMockData);
+      const [resRes, catRes] = await Promise.all([
+        axios.get('/api/resources'),
+        axios.get('/api/resources/categories/all')
+      ]);
+      setResources(resRes.data?.resources || []);
+      setCategories(catRes.data?.categories || []);
     } catch (err) {
-      console.warn("Backend API not reachable, loading default resources.");
-      setResources(initialMockData);
+      setError('Could not load resources right now. Please try again later.');
     } finally {
       setLoading(false);
     }
   };
 
+  const categoryName = (id) => {
+    const found = categories.find((c) => c._id === id);
+    return found ? found.name : '';
+  };
+
   const filteredResources = resources.filter((item) => {
-    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          item.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      (item.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.description || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-
-  const categories = ['All', 'Mental Health', 'Wellness', 'Lifestyle'];
 
   return (
     <div style={containerStyle}>
       <header style={headerStyle}>
         <h2>MindEase Resource Library</h2>
-        <p>Explore verified articles, audio guides, and tools for mental well-being.</p>
+        <p>Explore verified articles and helplines for mental well-being.</p>
       </header>
 
       {/* Filter & Search Bar */}
@@ -84,40 +62,60 @@ const ResourceLibrary = () => {
           onChange={(e) => setSelectedCategory(e.target.value)}
           style={selectStyle}
         >
-          {categories.map((cat, idx) => (
-            <option key={idx} value={cat}>{cat}</option>
+          <option value="All">All</option>
+          {categories.map((c) => (
+            <option key={c._id} value={c._id}>{c.name}</option>
           ))}
         </select>
       </div>
 
-      {/* Resource Cards Grid */}
+      {error && <p style={{ textAlign: 'center', color: 'crimson' }}>{error}</p>}
+
       {loading ? (
         <p style={{ textAlign: 'center' }}>Loading resources...</p>
       ) : (
-        <div style={gridStyle}>
-          {filteredResources.map((resource) => (
-            <div key={resource._id} style={cardStyle}>
-              <div>
-                <div style={badgeStyle}>{resource.category}</div>
-                <h3 style={{ marginTop: '10px' }}>{resource.title}</h3>
-                <p style={{ color: '#555', fontSize: '0.9rem' }}>{resource.description}</p>
+        <>
+          {!error && filteredResources.length === 0 && (
+            <p style={{ textAlign: 'center' }}>No resources found.</p>
+          )}
+          <div style={gridStyle}>
+            {filteredResources.map((resource) => (
+              <div key={resource._id} style={cardStyle}>
+                <div>
+                  <div style={badgeStyle}>{categoryName(resource.category) || 'General'}</div>
+                  <h3 style={{ marginTop: '10px' }}>{resource.title}</h3>
+                  <p style={{ color: '#555', fontSize: '0.9rem' }}>{resource.description}</p>
+
+                  {resource.type === 'helpline' && resource.phone && (
+                    <p style={{ fontWeight: 'bold', fontSize: '1.05rem' }}>Call: {resource.phone}</p>
+                  )}
+
+                  {resource.type === 'article' && !resource.url && resource.content && (
+                    <details style={{ marginTop: '8px' }}>
+                      <summary style={{ cursor: 'pointer', color: '#4f46e5' }}>Read article</summary>
+                      <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem' }}>{resource.content}</p>
+                    </details>
+                  )}
+                </div>
+                <div style={cardFooterStyle}>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#007bff' }}>
+                    [{resource.type}]
+                  </span>
+                  {resource.url && (
+                    <a
+                      href={resource.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={linkBtnStyle}
+                    >
+                      {resource.type === 'helpline' ? 'Visit Website' : 'Access Resource'}
+                    </a>
+                  )}
+                </div>
               </div>
-              <div style={cardFooterStyle}>
-                <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#007bff' }}>
-                  [{resource.type}]
-                </span>
-                <a 
-                  href={resource.link} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  style={linkBtnStyle}
-                >
-                  Access Resource
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
