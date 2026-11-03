@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import PasswordInput from "../../components/PasswordInput";
 
 const colors = {
   primary: "#2f855a",
@@ -12,6 +13,8 @@ const colors = {
   border: "#e5e7eb",
   error: "#c53030",
 };
+
+const MIN_PASSWORD_LENGTH = 8;
 
 // Roles a person can self-register as. Admin accounts are created
 // separately, not through this form.
@@ -33,6 +36,11 @@ export default function Register() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [touched, setTouched] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const passwordTooShort = form.password.length < MIN_PASSWORD_LENGTH;
+  const showPasswordError = (touched || submitted) && passwordTooShort;
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -41,6 +49,10 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSubmitted(true);
+
+    if (passwordTooShort) return;
+
     setLoading(true);
     try {
       // ADJUST: endpoint path if your authRoutes.js uses something else
@@ -65,7 +77,7 @@ export default function Register() {
     <div
       style={{
         minHeight: "100vh",
-        background: colors.soft,
+        background: colors.bg,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -130,18 +142,32 @@ export default function Register() {
             />
           </label>
 
-          <label style={labelStyle}>
+          <label style={{ ...labelStyle, marginBottom: 6 }}>
             Password
-            <input
-              type="password"
+            <PasswordInput
               name="password"
               value={form.password}
               onChange={handleChange}
-              required
-              minLength={6}
+              onBlur={() => setTouched(true)}
+              autoComplete="new-password"
+              hasError={showPasswordError}
               style={inputStyle}
             />
           </label>
+
+          <p
+            role={showPasswordError ? "alert" : undefined}
+            style={{
+              margin: "0 0 16px",
+              color: showPasswordError ? colors.error : colors.muted,
+              fontSize: 13,
+              fontWeight: showPasswordError ? 500 : 400,
+            }}
+          >
+            {showPasswordError
+              ? `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`
+              : `Use at least ${MIN_PASSWORD_LENGTH} characters.`}
+          </p>
 
           <label style={labelStyle}>
             I am registering as

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import PasswordInput from "../../components/PasswordInput";
 
 const colors = {
   primary: "#2f855a",
@@ -13,11 +14,18 @@ const colors = {
   error: "#c53030",
 };
 
+const MIN_PASSWORD_LENGTH = 8;
+
 export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [touched, setTouched] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const passwordTooShort = form.password.length < MIN_PASSWORD_LENGTH;
+  const showPasswordError = (touched || submitted) && passwordTooShort;
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -26,6 +34,10 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSubmitted(true);
+
+    if (passwordTooShort) return;
+
     setLoading(true);
     try {
       // ADJUST: endpoint path if your authRoutes.js uses something else
@@ -38,9 +50,7 @@ export default function Login() {
 
       navigate(`/dashboard/${user.role}`);
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Invalid email or password."
-      );
+      setError(err.response?.data?.message || "Invalid email or password.");
     } finally {
       setLoading(false);
     }
@@ -103,17 +113,32 @@ export default function Login() {
             />
           </label>
 
-          <label style={labelStyle}>
+          <label style={{ ...labelStyle, marginBottom: showPasswordError ? 6 : 16 }}>
             Password
-            <input
-              type="password"
+            <PasswordInput
               name="password"
               value={form.password}
               onChange={handleChange}
-              required
+              onBlur={() => setTouched(true)}
+              autoComplete="current-password"
+              hasError={showPasswordError}
               style={inputStyle}
             />
           </label>
+
+          {showPasswordError && (
+            <p
+              role="alert"
+              style={{
+                margin: "0 0 16px",
+                color: colors.error,
+                fontSize: 13,
+                fontWeight: 500,
+              }}
+            >
+              Password must be at least {MIN_PASSWORD_LENGTH} characters.
+            </p>
+          )}
 
           <button type="submit" disabled={loading} style={buttonStyle(loading)}>
             {loading ? "Logging in..." : "Log in"}
