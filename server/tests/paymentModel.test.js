@@ -92,6 +92,12 @@ describe('T17.2 - Workshop price field', () => {
     expect(workshop.isPaid).toBe(true);
   });
 
+  it('treats an empty string, which is what a blank form field sends, as no price', async () => {
+    const workshop = makeWorkshop({ price: '' });
+    expect(await validateModel(workshop)).toBeUndefined();
+    expect(workshop.isPaid).toBe(false);
+  });
+
   describe('isPaid virtual', () => {
     it('is false when no price was ever set', () => {
       expect(makeWorkshop().isPaid).toBe(false);
