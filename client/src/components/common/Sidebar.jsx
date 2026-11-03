@@ -1,17 +1,19 @@
 import { NavLink } from "react-router-dom";
 
 const linksByRole = {
-  user: [
-    { to: "/dashboard/mood", label: "Mood Tracker" },
-    { to: "/dashboard/journal", label: "Journal" },
-    { to: "/dashboard/sessions", label: "Book a Session" },
+  seeker: [
+    { to: "/dashboard/new-request", label: "Request Help" },
+    { to: "/dashboard/workshops", label: "Workshops" },
+    { to: "/resources", label: "Resource Library" },
   ],
-  counselor: [
-    { to: "/dashboard/appointments", label: "My Appointments" },
-    { to: "/dashboard/clients", label: "My Clients" },
+  facilitator: [
+    { to: "/dashboard/my-workshops", label: "My Workshops" },
+    { to: "/dashboard/workshops/new", label: "Create Workshop" },
   ],
   admin: [
     { to: "/dashboard/users", label: "Manage Users" },
+    { to: "/dashboard/verifications", label: "Verifications" },
+    { to: "/dashboard/resources", label: "Resources" },
     { to: "/dashboard/reports", label: "Reports" },
   ],
 };

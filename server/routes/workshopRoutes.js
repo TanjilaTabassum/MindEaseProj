@@ -1,4 +1,3 @@
-
 const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
@@ -8,13 +7,14 @@ const {
   createWorkshop,
   updateWorkshop,
   cancelWorkshop,
+  listMyWorkshops,
   listAvailableWorkshops,
   enroll,
   cancelEnrollment,
 } = require("../controllers/workshopController");
 
-
 router.post("/", auth, allowRoles("facilitator"), createWorkshop);
+router.get("/mine", auth, allowRoles("facilitator"), listMyWorkshops);
 router.patch("/:id", auth, allowRoles("facilitator"), updateWorkshop);
 router.patch("/:id/cancel", auth, allowRoles("facilitator"), cancelWorkshop);
 

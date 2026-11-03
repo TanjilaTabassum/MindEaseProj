@@ -1,4 +1,3 @@
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -22,6 +21,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import CrisisRequestForm from "./pages/seeker/CrisisRequestForm";
 import Workshops from "./pages/seeker/Workshops";
 import CreateWorkshop from "./pages/facilitator/CreateWorkshop";
+import MyWorkshops from "./pages/facilitator/MyWorkshops";
 import VideoRoom from "./components/video/VideoRoom";
 import CaseDetailPage from "./pages/psychologist/CaseDetailPage";
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
@@ -96,6 +96,9 @@ export default function App() {
 
         {/* T12.7 - facilitator create workshop form */}
         <Route path="workshops/new" element={<RequireRole role="facilitator"><CreateWorkshop /></RequireRole>} />
+
+        {/* facilitator's own workshops list */}
+        <Route path="my-workshops" element={<RequireRole role="facilitator"><MyWorkshops /></RequireRole>} />
 
         {/* Admin Manage Resources Route */}
         <Route path="resources" element={<RequireRole role="admin"><ManageResources /></RequireRole>} />

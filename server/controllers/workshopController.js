@@ -326,3 +326,15 @@ exports.cancelEnrollment = async (req, res) => {
     handleError(err, res);
   }
 };
+
+// GET /api/workshops/mine  (facilitator)
+// All of this facilitator's own workshops, newest date first.
+exports.listMyWorkshops = async (req, res) => {
+  try {
+    if (!approvedOnly(req, res)) return;
+    const workshops = await Workshop.find({ facilitator: req.user.id }).sort({ date: -1 });
+    res.json(workshops);
+  } catch (err) {
+    handleError(err, res);
+  }
+};
