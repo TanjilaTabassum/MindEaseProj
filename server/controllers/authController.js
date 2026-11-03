@@ -1,10 +1,10 @@
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const MIN_PASSWORD_LENGTH = 8;
+
 const generateToken = (user) => {
-  
   return jwt.sign(
     { id: user._id, role: user.role, status: user.status },
     process.env.JWT_SECRET,
@@ -21,6 +21,12 @@ exports.register = async (req, res) => {
 
     if (!name || !email || !password || !role) {
       return res.status(400).json({ message: 'Name, email, password and role are required.' });
+    }
+
+    if (typeof password !== 'string' || password.length < MIN_PASSWORD_LENGTH) {
+      return res
+        .status(400)
+        .json({ message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters.` });
     }
 
     if (!ALLOWED_ROLES.includes(role)) {
@@ -65,11 +71,8 @@ exports.register = async (req, res) => {
   }
 };
 
-    
-      
 
 // POST /api/auth/login
-
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -119,8 +122,6 @@ exports.login = async (req, res) => {
   }
 };
 
-   
-        
 
 // GET /api/auth/me
 exports.getMe = async (req, res) => {
