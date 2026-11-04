@@ -4,12 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- The brand mark, not Vite's. The PNG is the real logo on a transparent
-         ground; the SVG sprout is a simplified version that stays crisp at the
-         16px a browser tab actually renders. -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate icon" type="image/png" href="/mindease-logo.png" />
-    <link rel="apple-touch-icon" href="/mindease-logo.png" />
+    <!-- The real mark, built from mindease-logo.png rather than redrawn: the
+         source is cropped to the mark's own bounding box before it is scaled,
+         so a 16px tab spends its pixels on the logo instead of on the empty
+         padding down either side of the original. favicon.ico carries 16, 32
+         and 48 for the tab, the bookmark bar and a desktop shortcut. -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#f3f8ed" />
 
     <title>MindEase — A quiet place to begin</title>
