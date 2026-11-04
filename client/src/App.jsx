@@ -24,6 +24,8 @@ import CreateWorkshop from "./pages/facilitator/CreateWorkshop";
 import MyWorkshops from "./pages/facilitator/MyWorkshops";
 import VideoRoom from "./components/video/VideoRoom";
 import CaseDetailPage from "./pages/psychologist/CaseDetailPage";
+import Profile from "./pages/common/Profile";
+import Reports from "./pages/admin/Reports";
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
 import PaymentFailed from "./pages/payment/PaymentFailed";
 import PaymentCancelled from "./pages/payment/PaymentCancelled";
@@ -126,8 +128,11 @@ export default function App() {
         <Route path="appointments" element={<Placeholder title="My Appointments" />} />
         <Route path="clients" element={<Placeholder title="My Clients" />} />
         <Route path="users" element={<Placeholder title="Manage Users" />} />
-        <Route path="reports" element={<Placeholder title="Reports" />} />
-        <Route path="profile" element={<Placeholder title="Profile" />} />
+        {/* demo item 6 - admin reports, same counts as the overview */}
+        <Route path="reports" element={<RequireRole role="admin"><Reports /></RequireRole>} />
+
+        {/* demo item 5 - read-only profile, every role */}
+        <Route path="profile" element={<Profile />} />
       </Route>
 
       <Route path="*" element={<Placeholder title="Page Not Found" />} />
