@@ -27,7 +27,14 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-brand">
-        🌿 MindEase
+        <img
+          src="/mindease-logo.png"
+          alt=""
+          className="navbar-logo"
+          width="30"
+          height="30"
+        />
+        <span>MindEase</span>
       </Link>
 
       <div className="navbar-links">

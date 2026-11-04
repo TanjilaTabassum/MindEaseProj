@@ -77,7 +77,7 @@ export default function Register() {
     <div
       style={{
         minHeight: "100vh",
-        background: colors.bg,
+        background: "transparent",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -88,7 +88,10 @@ export default function Register() {
         style={{
           width: "100%",
           maxWidth: 420,
-          background: colors.white,
+          background: "rgba(255, 255, 255, 0.78)",
+          backdropFilter: "blur(14px)",
+          border: "1px solid rgba(47, 107, 58, 0.12)",
+          boxShadow: "0 24px 60px -34px rgba(47, 107, 58, 0.5)",
           border: `1px solid ${colors.border}`,
           borderRadius: 8,
           padding: "32px 28px",
