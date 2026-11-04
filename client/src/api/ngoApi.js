@@ -4,7 +4,7 @@ import axios from "axios";
 // While Tanjila's referral API (T14.4, T14.5) is not merged, USE_MOCK = true
 // serves fake data so the pages can be built and checked.
 // When the API is merged, change USE_MOCK to false. Nothing else changes.
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 const ngoApi = axios.create({ baseURL: "/api/referrals" });
 

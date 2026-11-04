@@ -89,8 +89,8 @@ export default function ReferNgoPanel({ requestId, defaultCategory = "", onRefer
                 marginBottom: "8px",
               }}
             >
-              <strong>{ngo.name}</strong>
-              <p style={{ margin: "4px 0 8px" }}>{ngo.description}</p>
+              <strong>{ngo.organizationName}</strong>
+              <p style={{ margin: "4px 0 8px" }}>{ngo.address}</p>
               <button type="button" onClick={() => setSelectedNgo(ngo)}>
                 Select
               </button>
@@ -101,7 +101,7 @@ export default function ReferNgoPanel({ requestId, defaultCategory = "", onRefer
 
       {selectedNgo && (
         <ConsentConfirm
-          ngoName={selectedNgo.name}
+          ngoName={selectedNgo.organizationName}
           onConfirm={confirmReferral}
           onCancel={() => setSelectedNgo(null)}
         />

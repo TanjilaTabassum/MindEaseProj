@@ -185,8 +185,8 @@ const CaseDetailPage = () => {
 
             {/* Lifecycle Action Triggers */}
             <div className="flex items-center gap-3">
-              {caseData?.status === 'Pending' && (
-                <>
+                {caseStatusOf(caseData) === 'pending' && (
+            <>
                   <button
                     onClick={() => initiateStatusChange('Accepted')}
                     className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer"
@@ -202,7 +202,7 @@ const CaseDetailPage = () => {
                 </>
               )}
 
-              {caseData?.status === 'Accepted' && (
+                            {caseStatusOf(caseData) === 'accepted' && (
                 <button
                   onClick={() => initiateStatusChange('Completed')}
                   className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer"
