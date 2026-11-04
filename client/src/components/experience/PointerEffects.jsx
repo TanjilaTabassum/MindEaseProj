@@ -16,6 +16,9 @@ const MAGNET_SELECTOR = [
   ".me-app button:not([disabled])",
   '.me-app a[class*="btn"]',
   ".me-app .navbar-btn",
+  // link-buttons: a primary action rendered as a plain <a> with the brand
+  // green inline and no class (see the matching block in theme.css)
+  '.me-app a[style*="rgb(47, 133, 90)"]',
   ".me-app .navbar-link",
   ".me-app .sidebar-link",
   ".me-app .me-magnetic",

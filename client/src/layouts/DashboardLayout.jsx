@@ -6,6 +6,7 @@ import ParticleField from "../components/experience/ParticleField";
 import CustomCursor from "../components/experience/CustomCursor";
 import PointerEffects from "../components/experience/PointerEffects";
 import "../styles/experience.css";
+import "../styles/tw-compat.css";
 import "../styles/theme.css";
 
 // Signed-in shell.

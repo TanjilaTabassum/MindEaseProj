@@ -983,6 +983,7 @@ body.me-intro-running .navbar-brand {
   .me-app [style*="background-color: rgb(255, 255, 255)"],
   .me-app [style*="background: rgb(255, 255, 255)"],
   .me-app [style*="background-color: rgb(247, 250, 248)"],
+  .me-app a[style*="rgb(47, 133, 90)"],
   .me-magnetic,
   .me-tilt {
     animation: none !important;

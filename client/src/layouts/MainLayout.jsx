@@ -7,6 +7,7 @@ import ParticleField from "../components/experience/ParticleField";
 import PointerEffects from "../components/experience/PointerEffects";
 import IntroOverlay from "../components/experience/IntroOverlay";
 import "../styles/experience.css";
+import "../styles/tw-compat.css";
 import "../styles/theme.css";
 
 // Public shell: the full experience layer.

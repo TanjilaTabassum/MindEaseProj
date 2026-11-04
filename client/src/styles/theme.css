@@ -418,6 +418,63 @@ body {
   display: none;
 }
 
+/* Link-buttons. Several pages render a primary action as a plain <a> or a
+   <Link> carrying the brand green inline and no class at all, so none of the
+   selectors above reach them and they stayed as flat rectangles next to real
+   buttons. Matching the serialised colour picks them up wherever they appear,
+   including on pages written after this sheet. */
+.me-app a[style*="background: rgb(47, 133, 90)"],
+.me-app a[style*="background-color: rgb(47, 133, 90)"],
+.me-app a[style*="background: rgb(47, 107, 58)"],
+.me-app a[style*="background-color: rgb(47, 107, 58)"] {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #2f6b3a, #4b9e4b) !important;
+  box-shadow: 0 10px 24px -14px rgba(47, 107, 58, 0.8);
+  animation: me-float-btn 8.4s ease-in-out -1.5s infinite;
+  will-change: transform;
+  transition: box-shadow 0.4s var(--me-ease), filter 0.4s var(--me-ease);
+}
+
+.me-app a[style*="background: rgb(47, 133, 90)"]::after,
+.me-app a[style*="background-color: rgb(47, 133, 90)"]::after,
+.me-app a[style*="background: rgb(47, 107, 58)"]::after,
+.me-app a[style*="background-color: rgb(47, 107, 58)"]::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -140%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  transform: skewX(-18deg);
+  transition: left 0.75s var(--me-ease);
+  pointer-events: none;
+}
+
+.me-app a[style*="background: rgb(47, 133, 90)"]:hover,
+.me-app a[style*="background-color: rgb(47, 133, 90)"]:hover,
+.me-app a[style*="background: rgb(47, 107, 58)"]:hover,
+.me-app a[style*="background-color: rgb(47, 107, 58)"]:hover {
+  animation-play-state: paused;
+  box-shadow: 0 16px 34px -18px rgba(47, 107, 58, 0.85);
+  filter: saturate(1.12) brightness(1.04);
+}
+
+.me-app a[style*="background: rgb(47, 133, 90)"]:hover::after,
+.me-app a[style*="background-color: rgb(47, 133, 90)"]:hover::after,
+.me-app a[style*="background: rgb(47, 107, 58)"]:hover::after,
+.me-app a[style*="background-color: rgb(47, 107, 58)"]:hover::after {
+  left: 160%;
+}
+
 /* --------------------------------------------------- off-palette accents */
 
 /* A few pages were written against an indigo/blue accent that predates the
