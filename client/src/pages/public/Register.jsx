@@ -38,6 +38,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [touched, setTouched] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [pendingApproval, setPendingApproval] = useState(false);
 
   const passwordTooShort = form.password.length < MIN_PASSWORD_LENGTH;
   const showPasswordError = (touched || submitted) && passwordTooShort;
@@ -55,15 +56,21 @@ export default function Register() {
 
     setLoading(true);
     try {
-      // ADJUST: endpoint path if your authRoutes.js uses something else
       const res = await axios.post("/api/auth/register", form);
-
-      // ADJUST: field names if authController.js returns a different shape
       const { token, user } = res.data;
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
 
-      navigate(`/dashboard/${user.role}`);
+      if (token && user) {
+        // Approved account (seeker): log in straight away.
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+        navigate(`/dashboard/${user.role}`);
+      } else {
+        // Pending account (volunteer, psychologist, NGO, facilitator):
+        // no token until an admin approves. Clear any old login.
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setPendingApproval(true);
+      }
     } catch (err) {
       setError(
         err.response?.data?.message || "Something went wrong. Please try again."
@@ -72,6 +79,59 @@ export default function Register() {
       setLoading(false);
     }
   };
+
+  if (pendingApproval) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          background: colors.bg,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "24px",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 420,
+            background: colors.white,
+            border: `1px solid ${colors.border}`,
+            borderRadius: 8,
+            padding: "32px 28px",
+            textAlign: "center",
+          }}
+        >
+          <p style={{ margin: 0, color: colors.primary, fontWeight: 600, fontSize: 14 }}>
+            MindEase
+          </p>
+          <h1 style={{ margin: "4px 0 16px", color: colors.text, fontSize: 24 }}>
+            Account created
+          </h1>
+          <div
+            style={{
+              background: colors.primaryLight,
+              borderRadius: 6,
+              padding: "12px 14px",
+              marginBottom: 20,
+              color: colors.text,
+              fontSize: 14,
+            }}
+          >
+            Your account is waiting for admin approval. You can log in once it
+            has been approved.
+          </div>
+          <Link
+            to="/login"
+            style={{ color: colors.primary, fontWeight: 600, fontSize: 15 }}
+          >
+            Go to log in
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
