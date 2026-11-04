@@ -142,7 +142,7 @@ const CaseDetailPage = () => {
           <h3 className="text-lg font-bold text-slate-800">Unable to Open Case File</h3>
           <p className="text-xs text-rose-600 leading-relaxed">{error}</p>
           <button
-            onClick={() => navigate('/psychologist/dashboard')}
+            onClick={() => navigate('/dashboard/psychologist')}
             className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
           >
             Return to Case Directory
@@ -159,7 +159,7 @@ const CaseDetailPage = () => {
         {/* Navigation Breadcrumb Bar */}
         <div className="flex items-center justify-between">
           <button
-            onClick={() => navigate('/psychologist/dashboard')}
+            onClick={() => navigate('/dashboard/psychologist')}
             className="text-xs font-bold text-emerald-800 hover:text-emerald-900 flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-200 transition-colors cursor-pointer"
           >
             ← Back to Case Directory
@@ -179,14 +179,14 @@ const CaseDetailPage = () => {
               </h1>
               <p className="text-xs text-slate-500 mt-1">
                 Assigned Session | Lifecycle Status:{' '}
-                <strong className="text-emerald-700 uppercase font-black">{caseData?.status}</strong>
+                <strong className="text-emerald-700 uppercase font-black">{caseStatusOf(caseData)}</strong>
               </p>
             </div>
 
             {/* Lifecycle Action Triggers */}
             <div className="flex items-center gap-3">
-              {caseData?.status === 'Pending' && (
-                <>
+                {caseStatusOf(caseData) === 'pending' && (
+            <>
                   <button
                     onClick={() => initiateStatusChange('Accepted')}
                     className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer"
@@ -202,7 +202,7 @@ const CaseDetailPage = () => {
                 </>
               )}
 
-              {caseData?.status === 'Accepted' && (
+                            {caseStatusOf(caseData) === 'accepted' && (
                 <button
                   onClick={() => initiateStatusChange('Completed')}
                   className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer"
