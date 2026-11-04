@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import NotificationBell from "./NotificationBell";
 import "./Navbar.css";
@@ -15,6 +16,25 @@ export default function Navbar() {
   const navigate = useNavigate();
   const user = getStoredUser();
 
+  // Once the page has moved at all the bar tightens and lifts off the
+  // content (see `.is-scrolled` in theme.css). Reading scrollY inside a
+  // rAF keeps this off the scroll handler's critical path.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    let queued = false;
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        setScrolled(window.scrollY > 12);
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -25,7 +45,7 @@ export default function Navbar() {
     isActive ? "navbar-link active" : "navbar-link";
 
   return (
-    <nav className="navbar">
+    <nav className={scrolled ? "navbar is-scrolled" : "navbar"}>
       <Link to="/" className="navbar-brand">
         <img
           src="/mindease-logo.png"

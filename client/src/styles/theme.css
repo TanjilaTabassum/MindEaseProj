@@ -1,0 +1,480 @@
+/* ===========================================================================
+   MindEase theme layer
+   ---------------------------------------------------------------------------
+   The pages in this app were written with hard-coded inline styles: white
+   panels, grey borders, system fonts. Rewriting thirty page components days
+   before the hand-in would be a large, risky diff across files other people
+   own, so this sheet re-skins them from the outside instead.
+
+   The trick that makes that possible: React sets inline styles through the
+   CSSOM, so `backgroundColor: "#fff"` reaches the DOM as the literal text
+   `background-color: rgb(255, 255, 255)`. That is an attribute value, so CSS
+   can match it:
+
+       .me-app [style*="background-color: rgb(255, 255, 255)"] { ... }
+
+   and `!important` outranks a plain inline declaration. Every flat white panel
+   in the product becomes glass without a single page file changing. If a page
+   is ever rewritten properly it simply stops matching, and keeps whatever
+   styling it was given.
+
+   Loaded by both layouts, after index.css.
+   ======================================================================== */
+
+:root {
+  --me-font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --me-font-body: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --me-glass: rgba(255, 255, 255, 0.55);
+  --me-glass-line: rgba(47, 107, 58, 0.14);
+  --me-shadow-soft: 0 22px 50px -32px rgba(32, 72, 44, 0.55);
+}
+
+/* ------------------------------------------------------------- typography */
+
+body {
+  font-family: var(--me-font-body);
+  color: var(--me-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+
+  /* The page itself is alive, so a route rendered without the canvas behind
+     it still never shows a dead white rectangle. */
+  background:
+    radial-gradient(60rem 40rem at 12% -10%, rgba(141, 198, 63, 0.22), transparent 70%),
+    radial-gradient(50rem 44rem at 92% 8%, rgba(75, 158, 75, 0.16), transparent 70%),
+    linear-gradient(168deg, #fbfbf4 0%, #f4f8ec 46%, #e8f3e2 100%);
+  background-attachment: fixed;
+}
+
+.me-app h1,
+.me-app h2,
+.me-app h3 {
+  font-family: var(--me-font-display);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--me-green-deep);
+}
+
+.me-app p,
+.me-app li,
+.me-app label,
+.me-app td,
+.me-app th,
+.me-app button,
+.me-app input,
+.me-app select,
+.me-app textarea {
+  font-family: var(--me-font-body);
+}
+
+/* ------------------------------------------------- the white-panel rescue */
+
+/* Full strength: anything that was solid white becomes glass. */
+.me-app [style*="background-color: rgb(255, 255, 255)"],
+.me-app [style*="background: rgb(255, 255, 255)"] {
+  background-color: var(--me-glass) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  backdrop-filter: blur(20px) saturate(1.3);
+  border-color: var(--me-glass-line) !important;
+  border-radius: 18px !important;
+  box-shadow: var(--me-shadow-soft);
+  transition: background-color 0.5s var(--me-ease), box-shadow 0.5s var(--me-ease),
+    border-color 0.5s var(--me-ease);
+}
+
+/* Secondary surfaces: the pale greys used for rows inside those panels. A
+   tint, not more glass - nested blur turns the whole page to soup. */
+.me-app [style*="background-color: rgb(247, 250, 248)"],
+.me-app [style*="background-color: rgb(247, 250, 252)"],
+.me-app [style*="background-color: rgb(249, 250, 251)"],
+.me-app [style*="background-color: rgb(237, 242, 247)"],
+.me-app [style*="background: rgb(247, 250, 248)"] {
+  background-color: rgba(255, 255, 255, 0.4) !important;
+  border-color: rgba(47, 107, 58, 0.1) !important;
+  border-radius: 14px !important;
+}
+
+/* The dashboards carry dense text over the same drifting field, so their
+   panels sit a little more opaque than the public pages'. */
+.me-app-dashboard [style*="background-color: rgb(255, 255, 255)"],
+.me-app-dashboard [style*="background: rgb(255, 255, 255)"] {
+  background-color: rgba(255, 255, 255, 0.66) !important;
+}
+
+/* ------------------------------------------------------------ navigation */
+
+/* Both shells get the glass bar now. The dashboard looked like a different
+   product with a solid white strip across the top of a drifting background. */
+.me-app .navbar {
+  background: rgba(252, 253, 248, 0.6) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom: 1px solid var(--me-glass-line);
+  z-index: 30;
+  transition: padding 0.45s var(--me-ease), background-color 0.45s var(--me-ease),
+    box-shadow 0.45s var(--me-ease);
+}
+
+/* once the page has moved, the bar tightens and lifts off the content */
+.me-app .navbar.is-scrolled {
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+  background: rgba(252, 253, 248, 0.84) !important;
+  box-shadow: 0 16px 40px -34px rgba(32, 72, 44, 0.9);
+}
+
+.me-app .navbar-brand {
+  color: var(--me-green-deep);
+  font-family: var(--me-font-display);
+  font-weight: 600;
+}
+
+.me-app .navbar-logo {
+  transition: transform 0.7s var(--me-ease);
+}
+
+.me-app .navbar-brand:hover .navbar-logo {
+  transform: rotate(-12deg) scale(1.12);
+}
+
+.me-app .navbar-user {
+  color: var(--me-ink-soft);
+  font-size: 0.9rem;
+}
+
+/* --------------------------------------------------------------- sidebar */
+
+.me-app .sidebar {
+  background: rgba(255, 255, 255, 0.4) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.25);
+  backdrop-filter: blur(20px) saturate(1.25);
+  border-right: 1px solid var(--me-glass-line);
+  position: relative;
+  z-index: 5;
+}
+
+.me-app .sidebar-title {
+  font-family: var(--me-font-body);
+  letter-spacing: 0.16em;
+  color: rgba(47, 107, 58, 0.5);
+  font-weight: 600;
+}
+
+.me-app .sidebar-link {
+  position: relative;
+  isolation: isolate;
+  border-radius: 12px;
+  color: var(--me-ink-soft);
+  font-weight: 500;
+  transition: color 0.35s var(--me-ease), transform 0.35s var(--me-ease);
+}
+
+/* a pill that wipes in from the left rather than appearing all at once */
+.me-app .sidebar-link::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 12px;
+  background: linear-gradient(100deg, rgba(141, 198, 63, 0.3), rgba(75, 158, 75, 0.12));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--me-ease);
+}
+
+.me-app .sidebar-link:hover {
+  background: transparent;
+  color: var(--me-green-deep);
+  transform: translateX(4px);
+}
+
+.me-app .sidebar-link:hover::before,
+.me-app .sidebar-link.active::before {
+  transform: scaleX(1);
+}
+
+.me-app .sidebar-link.active {
+  background: transparent;
+  color: var(--me-green-deep);
+  font-weight: 600;
+}
+
+/* and a marker down the side of the active item */
+.me-app .sidebar-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18%;
+  bottom: 18%;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--me-green-bright), var(--me-green));
+  animation: me-marker-in 0.5s var(--me-ease) both;
+}
+
+@keyframes me-marker-in {
+  from { transform: scaleY(0); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+
+/* ---------------------------------------------------------------- footer */
+
+.me-app .footer {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.38) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--me-glass-line);
+  color: var(--me-ink-soft);
+}
+
+.me-app .footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1080px;
+  margin: 0 auto 1.1rem;
+  text-align: left;
+}
+
+.me-app .footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--me-font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--me-green-deep);
+  text-decoration: none;
+}
+
+.me-app .footer-brand img {
+  transition: transform 0.6s var(--me-ease);
+}
+
+.me-app .footer-brand:hover img {
+  transform: rotate(-14deg) scale(1.1);
+}
+
+.me-app .footer-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.me-app .footer-links a {
+  color: var(--me-ink-soft);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s var(--me-ease);
+}
+
+.me-app .footer-links a:hover {
+  color: var(--me-green-deep);
+}
+
+.me-app .footer-note {
+  font-size: 0.8rem;
+  color: rgba(91, 107, 97, 0.8);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 640px) {
+  .me-app .footer-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* ----------------------------------------------------------------- forms */
+
+.me-app input:not([type="checkbox"]):not([type="radio"]),
+.me-app select,
+.me-app textarea {
+  background: rgba(255, 255, 255, 0.62) !important;
+  border: 1px solid rgba(47, 107, 58, 0.16) !important;
+  border-radius: 12px !important;
+  color: var(--me-ink);
+  transition: border-color 0.35s var(--me-ease), box-shadow 0.35s var(--me-ease),
+    background-color 0.35s var(--me-ease);
+}
+
+.me-app input:focus,
+.me-app select:focus,
+.me-app textarea:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(75, 158, 75, 0.55) !important;
+  box-shadow: 0 0 0 4px rgba(141, 198, 63, 0.18);
+}
+
+.me-app ::placeholder {
+  color: rgba(91, 107, 97, 0.55);
+}
+
+/* ---------------------------------------------------------------- tables */
+
+.me-app th {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--me-green-deep);
+  background: rgba(141, 198, 63, 0.1) !important;
+  border-bottom: 1px solid var(--me-glass-line) !important;
+}
+
+.me-app tbody tr {
+  transition: background-color 0.3s var(--me-ease);
+}
+
+.me-app tbody tr:hover {
+  background: rgba(141, 198, 63, 0.09);
+}
+
+/* --------------------------------------------------------------- buttons */
+
+/* Every button in the app, whatever inline styling it carries: a pill, a
+   light sweeping across the face on hover, and a glow that answers a press. */
+.me-app button,
+.me-app a[class*="btn"],
+.me-app .navbar-btn {
+  position: relative;
+  overflow: hidden;
+  border-radius: 999px !important;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  isolation: isolate;
+  transition: box-shadow 0.4s var(--me-ease), filter 0.4s var(--me-ease);
+}
+
+.me-app button::after,
+.me-app a[class*="btn"]::after,
+.me-app .navbar-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -140%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  transform: skewX(-18deg);
+  transition: left 0.75s var(--me-ease);
+  pointer-events: none;
+}
+
+.me-app button:hover::after,
+.me-app a[class*="btn"]:hover::after,
+.me-app .navbar-btn:hover::after {
+  left: 160%;
+}
+
+.me-app button:not([disabled]):hover,
+.me-app a[class*="btn"]:hover,
+.me-app .navbar-btn:hover {
+  box-shadow: 0 16px 34px -18px rgba(47, 107, 58, 0.75);
+  filter: saturate(1.12) brightness(1.04);
+}
+
+.me-app button:not([disabled]):active {
+  filter: saturate(1.2) brightness(0.97);
+}
+
+.me-app button[disabled] {
+  opacity: 0.65;
+  cursor: default;
+}
+
+/* Icon-only buttons - the notification bell, the password eye - are glyphs,
+   not surfaces. They should not get a pill or a light sweep. */
+.me-app button[style*="background: none"] {
+  overflow: visible;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+}
+
+.me-app button[style*="background: none"]::after {
+  display: none;
+}
+
+/* --------------------------------------------------- off-palette accents */
+
+/* A few pages were written against an indigo/blue accent that predates the
+   logo, and they read as a different product next to everything else. Same
+   trick as the panels: match the serialised inline colour and restate it in
+   the brand green. Semantic colours - the red of Suspend, the amber of a
+   warning - are deliberately left alone. */
+.me-app [style*="background: rgb(79, 70, 229)"],
+.me-app [style*="background-color: rgb(79, 70, 229)"] {
+  background: linear-gradient(135deg, #2f6b3a, #4b9e4b) !important;
+}
+
+.me-app [style*="color: rgb(79, 70, 229)"]:not([style*="background"]),
+.me-app [style*="color: rgb(0, 123, 255)"]:not([style*="background"]) {
+  color: var(--me-green) !important;
+}
+
+/* ------------------------------------------------------------------ misc */
+
+.me-app a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+::selection {
+  background: rgba(141, 198, 63, 0.35);
+  color: var(--me-green-deep);
+}
+
+/* a scrollbar that belongs to the palette rather than to the OS */
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(232, 243, 226, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(141, 198, 63, 0.8), rgba(75, 158, 75, 0.8));
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #8dc63f, #4b9e4b);
+  background-clip: content-box;
+}
+
+/* keep page content above the canvas and the ambient layer */
+.me-app .main-content,
+.me-app .dashboard-body,
+.me-app .dashboard-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* ------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .me-app .sidebar-link,
+  .me-app .sidebar-link::before,
+  .me-app .sidebar-link.active::after,
+  .me-app .navbar,
+  .me-app .navbar-logo,
+  .me-app button::after,
+  .me-app a[class*="btn"]::after,
+  .me-app .navbar-btn::after {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}

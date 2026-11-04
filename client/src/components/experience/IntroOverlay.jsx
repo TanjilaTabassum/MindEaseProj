@@ -1,9 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-// The opening sequence: the mark arrives, two rings breathe out of it, the
-// wordmark rises a letter at a time, a hairline fills, and the whole thing
-// lifts away.
+// The opening sequence.
+//
+// Three aurora fields drift behind a field of rising motes; the mark arrives
+// out of a blur into a breathing halo; three rings expand out of it; the
+// wordmark rises a letter at a time and a light travels across it once; a
+// hairline fills; then the whole screen brightens, blurs and scales past the
+// viewer onto the home page.
 //
 // Three deliberate constraints, because this runs in front of a live demo:
 //   - it plays once per browser session, so navigating back to the home page
@@ -19,6 +23,7 @@ const HOLD_MS = 3400;
 const LEAVE_MS = 1000;
 
 const WORD = "MindEase";
+const MOTE_COUNT = 18;
 
 export default function IntroOverlay({ onDone }) {
   const { pathname } = useLocation();
@@ -44,6 +49,24 @@ export default function IntroOverlay({ onDone }) {
 
   const [leaving, setLeaving] = useState(false);
   const timers = useRef([]);
+
+  // Scattered once, not per render, so the motes do not jump on a re-render.
+  const motes = useMemo(
+    () =>
+      Array.from({ length: MOTE_COUNT }, (_, i) => {
+        const size = 3 + Math.random() * 9;
+        return {
+          key: i,
+          left: `${Math.random() * 100}%`,
+          width: `${size}px`,
+          height: `${size}px`,
+          animationDuration: `${7 + Math.random() * 9}s`,
+          animationDelay: `${-Math.random() * 10}s`,
+          opacity: 0.25 + Math.random() * 0.5,
+        };
+      }),
+    []
+  );
 
   const finish = useCallback(() => {
     if (leaving) return;
@@ -95,15 +118,25 @@ export default function IntroOverlay({ onDone }) {
       aria-label="MindEase is loading"
       onClick={finish}
     >
+      <span className="me-intro-aurora" aria-hidden="true" />
+      <span className="me-intro-aurora" aria-hidden="true" />
+      <span className="me-intro-aurora" aria-hidden="true" />
+
+      {motes.map(({ key, ...style }) => (
+        <span key={key} className="me-intro-mote" style={style} aria-hidden="true" />
+      ))}
+
       <div className="me-intro-logo-wrap">
-        <span className="me-intro-ring" />
-        <span className="me-intro-ring" />
+        <span className="me-intro-halo" aria-hidden="true" />
+        <span className="me-intro-ring" aria-hidden="true" />
+        <span className="me-intro-ring" aria-hidden="true" />
+        <span className="me-intro-ring" aria-hidden="true" />
         <img
           src="/mindease-logo.png"
           alt=""
           className="me-intro-logo"
-          width="150"
-          height="150"
+          width="160"
+          height="160"
         />
       </div>
 

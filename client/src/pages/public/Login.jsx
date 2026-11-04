@@ -67,17 +67,19 @@ export default function Login() {
         padding: "24px",
       }}
     >
+      {/* me-card opts the panel into the site-wide float and pointer tilt */}
       <div
+        className="me-card"
         style={{
           width: "100%",
           maxWidth: 420,
-          background: "rgba(255, 255, 255, 0.78)",
-          backdropFilter: "blur(14px)",
-          border: "1px solid rgba(47, 107, 58, 0.12)",
-          boxShadow: "0 24px 60px -34px rgba(47, 107, 58, 0.5)",
-          border: `1px solid ${colors.border}`,
-          borderRadius: 8,
-          padding: "32px 28px",
+          background: "rgba(255, 255, 255, 0.55)",
+          backdropFilter: "blur(20px) saturate(1.3)",
+          WebkitBackdropFilter: "blur(20px) saturate(1.3)",
+          border: "1px solid rgba(47, 107, 58, 0.14)",
+          boxShadow: "0 28px 64px -34px rgba(32, 72, 44, 0.6)",
+          borderRadius: 20,
+          padding: "36px 30px",
         }}
       >
         <p style={{ margin: 0, color: colors.primary, fontWeight: 600, fontSize: 14 }}>

@@ -12,13 +12,27 @@ import { useEffect } from "react";
 // screen is a toy; a button that leans 6px is a surface that noticed you.
 // Delegated listeners mean pages added later get this for free.
 
-const MAGNET_SELECTOR =
-  '.me-app button:not([disabled]), .me-app a[class*="btn"], .me-app .navbar-btn, .me-app .me-magnetic';
-const TILT_SELECTOR = ".me-app .me-card, .me-app article";
+const MAGNET_SELECTOR = [
+  ".me-app button:not([disabled])",
+  '.me-app a[class*="btn"]',
+  ".me-app .navbar-btn",
+  ".me-app .navbar-link",
+  ".me-app .sidebar-link",
+  ".me-app .me-magnetic",
+].join(", ");
 
-const MAGNET_RADIUS = 90;
-const MAGNET_MAX = 6; // px
-const TILT_MAX = 4; // degrees
+// `.me-card` and `article` are the components written for this layer; the
+// `[style*=...]` selector catches the inline-styled panels on the older
+// pages (see theme.css for why that string matches).
+const TILT_SELECTOR = [
+  ".me-app .me-card",
+  ".me-app article",
+  '.me-app [style*="background-color: rgb(255, 255, 255)"]',
+].join(", ");
+
+const MAGNET_RADIUS = 100;
+const MAGNET_MAX = 8; // px
+const TILT_MAX = 4.5; // degrees
 
 export default function PointerEffects() {
   useEffect(() => {
@@ -92,10 +106,18 @@ export default function PointerEffects() {
           // -1..1 from the centre of the card
           const nx = (px - (r.left + r.width / 2)) / (r.width / 2);
           const ny = (py - (r.top + r.height / 2)) / (r.height / 2);
+
+          // A fixed angle that looks good on a 300px card throws the far edge
+          // of a full-width dashboard panel around by tens of pixels, which
+          // makes a form inside it feel like it is sliding away. Scale the
+          // angle down as the surface gets bigger.
+          const amount =
+            TILT_MAX * Math.min(1, 460 / Math.max(r.width, r.height, 1));
+
           grab(
             el,
-            `perspective(900px) rotateX(${(-ny * TILT_MAX).toFixed(2)}deg) ` +
-              `rotateY(${(nx * TILT_MAX).toFixed(2)}deg) translate3d(0,-5px,0)`
+            `perspective(1100px) rotateX(${(-ny * amount).toFixed(2)}deg) ` +
+              `rotateY(${(nx * amount).toFixed(2)}deg) translate3d(0,-5px,0)`
           );
         } else if (active.has(el)) {
           reset(el);

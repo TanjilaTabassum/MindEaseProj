@@ -11,10 +11,20 @@
 }
 
 .navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   font-size: 1.4rem;
   font-weight: 700;
+  letter-spacing: -0.01em;
   color: #2f855a;
   text-decoration: none;
+}
+
+.navbar-logo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
 }
 
 .navbar-links {
@@ -53,98 +63,64 @@
 .navbar-btn:hover {
   background: #276749;
 }
-/* ---------------------------------------------------------------- logo */
 
-.navbar-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  letter-spacing: -0.01em;
-}
+/* ==========================================================================
+   Inside the experience layer
+   --------------------------------------------------------------------------
+   These used to be scoped to `.me-public`, which left the signed-in half of
+   the product with the plain bar above a drifting background. Both shells
+   get the same bar now; theme.css supplies the glass and the scroll state.
+   ========================================================================= */
 
-.navbar-logo {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
-}
-
-/* --------------------------------------------- public pages: glass bar --
-   Scoped to .me-public so the dashboards keep the plain solid bar. The
-   public shell has a drifting background behind it, and a hard white strip
-   across the top cuts it in half. */
-
-.me-public .navbar {
-  background: rgba(255, 255, 255, 0.62);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(47, 107, 58, 0.1);
-  z-index: 20;
-  transition: background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.me-public .navbar-brand {
-  color: #2f6b3a;
-}
-
-.me-public .navbar-link {
+.me-app .navbar-link {
   position: relative;
   color: #5b6b61;
-  padding-bottom: 2px;
+  padding-bottom: 3px;
   transition: color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* a hairline that grows out from the middle on hover */
-.me-public .navbar-link::after {
+/* a hairline that grows across the link on hover */
+.me-app .navbar-link::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 1px;
+  height: 1.5px;
+  border-radius: 2px;
   background: linear-gradient(90deg, #4b9e4b, #8dc63f);
   transform: scaleX(0);
+  transform-origin: left;
   transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.me-public .navbar-link:hover::after,
-.me-public .navbar-link.active::after {
+.me-app .navbar-link:hover::after,
+.me-app .navbar-link.active::after {
   transform: scaleX(1);
 }
 
-.me-public .navbar-link:hover,
-.me-public .navbar-link.active {
+.me-app .navbar-link:hover,
+.me-app .navbar-link.active {
   color: #2f6b3a;
 }
 
-.me-public .navbar-btn {
+.me-app .navbar-btn {
   background: linear-gradient(135deg, #2f6b3a, #4b9e4b);
   border-radius: 999px;
   padding: 0.55rem 1.3rem;
   font-weight: 600;
   box-shadow: 0 8px 20px -10px rgba(47, 107, 58, 0.7);
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.me-public .navbar-btn:hover {
+.me-app .navbar-btn:hover {
   background: linear-gradient(135deg, #2f6b3a, #4b9e4b);
-  transform: translateY(-1px);
-  box-shadow: 0 12px 26px -10px rgba(47, 107, 58, 0.8);
 }
 
 /* ------------------------------------------------- public footer + base */
 
 .me-public .footer {
-  position: relative;
-  z-index: 1;
-  text-align: center;
   padding: 2.5rem 1.5rem;
-  color: #5b6b61;
   font-size: 0.85rem;
-  border-top: 1px solid rgba(47, 107, 58, 0.1);
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
 }
 
 .me-public {
@@ -153,8 +129,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .me-public .navbar-link::after,
-  .me-public .navbar-btn {
+  .me-app .navbar-link,
+  .me-app .navbar-link::after {
     transition: none;
   }
 }

@@ -12,32 +12,40 @@ import { useEffect, useRef } from "react";
 // push, not a hard repel: the point is that the background notices you, not
 // that it plays with you.
 
-const COUNT_BY_AREA = 0.00011; // particles per px² of viewport
-const MAX_PARTICLES = 220;
-const MIN_PARTICLES = 70;
+const COUNT_BY_AREA = 0.0002; // particles per px² of viewport
+const MAX_PARTICLES = 340;
+const MIN_PARTICLES = 110;
 
 function makeParticle(w, h) {
   // depth 0 = far, 1 = near
   const depth = Math.random();
-  const isLeaf = Math.random() < 0.22;
+  const roll = Math.random();
+  const isLeaf = roll < 0.24;
+  // a handful of larger, very soft discs read as bokeh and give the field
+  // some scale, so it is not one uniform speckle
+  const isBokeh = !isLeaf && roll > 0.94;
   return {
     x: Math.random() * w,
     y: Math.random() * h,
     depth,
-    r: isLeaf ? 7 + depth * 13 : 1.4 + depth * 3.4,
+    r: isLeaf ? 8 + depth * 15 : isBokeh ? 16 + depth * 30 : 1.6 + depth * 3.8,
     isLeaf,
+    isBokeh,
     // slow base drift, upward-ish, faster when near
-    vx: (Math.random() - 0.5) * (0.12 + depth * 0.26),
-    vy: -(0.09 + Math.random() * 0.16) * (0.4 + depth),
+    vx: (Math.random() - 0.5) * (0.14 + depth * 0.3),
+    vy: -(0.1 + Math.random() * 0.2) * (0.4 + depth),
     // offset from the drift, used for the cursor push, always easing back to 0
     ox: 0,
     oy: 0,
     rot: Math.random() * Math.PI * 2,
-    vrot: (Math.random() - 0.5) * 0.008,
-    hue: 92 + Math.random() * 26, // greens
-    alpha: 0.2 + depth * 0.45,
+    vrot: (Math.random() - 0.5) * 0.01,
+    // mostly greens, with a few warm cream motes so the field has some light
+    hue: Math.random() < 0.12 ? 52 + Math.random() * 12 : 92 + Math.random() * 28,
+    alpha: isBokeh ? 0.05 + depth * 0.09 : 0.22 + depth * 0.5,
     phase: Math.random() * Math.PI * 2,
-    sway: 0.3 + Math.random() * 0.8,
+    sway: 0.3 + Math.random() * 0.9,
+    // near particles catch the light; far ones stay matte
+    glow: depth > 0.72,
   };
 }
 
@@ -114,11 +122,18 @@ export default function ParticleField() {
       t += 0.0055;
       ctx.clearRect(0, 0, w, h);
 
+      // A very slow wind that reverses over roughly a minute, so the field
+      // never settles into one predictable direction of travel.
+      const wind = Math.sin(t * 0.17) * 0.22;
+
       for (let i = 0; i < particles.length; i += 1) {
         const p = particles[i];
 
         // base drift plus a slow lateral sway, so nothing travels in a line
-        p.x += p.vx + Math.sin(t * p.sway + p.phase) * 0.16 * (0.3 + p.depth);
+        p.x +=
+          p.vx +
+          wind * (0.3 + p.depth) +
+          Math.sin(t * p.sway + p.phase) * 0.18 * (0.3 + p.depth);
         p.y += p.vy;
         p.rot += p.vrot;
 
@@ -155,10 +170,26 @@ export default function ParticleField() {
         ctx.save();
         ctx.translate(x, y);
 
+        if (p.glow) {
+          // only the nearest particles pay for a shadow; doing this for the
+          // whole field costs more than the look is worth
+          ctx.shadowBlur = p.isLeaf ? 14 : 10;
+          ctx.shadowColor = `hsla(${p.hue}, 70%, 55%, 0.55)`;
+        }
+
         if (p.isLeaf) {
           ctx.rotate(p.rot);
           ctx.fillStyle = `hsla(${p.hue}, 48%, 42%, ${p.alpha * 0.75})`;
           drawLeaf(p);
+        } else if (p.isBokeh) {
+          const g = ctx.createRadialGradient(0, 0, 0, 0, 0, p.r);
+          g.addColorStop(0, `hsla(${p.hue}, 60%, 60%, ${p.alpha})`);
+          g.addColorStop(0.7, `hsla(${p.hue}, 60%, 55%, ${p.alpha * 0.4})`);
+          g.addColorStop(1, `hsla(${p.hue}, 60%, 55%, 0)`);
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+          ctx.fill();
         } else {
           ctx.fillStyle = `hsla(${p.hue}, 55%, 45%, ${p.alpha})`;
           ctx.beginPath();
