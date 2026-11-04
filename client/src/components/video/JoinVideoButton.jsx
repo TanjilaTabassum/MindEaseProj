@@ -14,18 +14,24 @@ import { roomLoaders, openRoom, errorMessage } from "../../api/videoApi";
 // Per the T18.1 spike the room opens in a new tab; this component never
 // renders a call itself.
 
+// Deep forest rather than the blue this started out as: distinct enough from
+// the primary action next to it, but still inside the logo's palette.
 const baseButton = {
-  backgroundColor: "#2b6cb0",
+  background: "linear-gradient(135deg, #1f4d2e, #3d7f46)",
   color: "#fff",
   border: "none",
-  padding: "8px 16px",
-  borderRadius: "6px",
+  padding: "8px 18px",
+  borderRadius: "999px",
   cursor: "pointer",
   fontWeight: "600",
   fontSize: "13px",
 };
 
-const busyButton = { ...baseButton, backgroundColor: "#90cdf4", cursor: "default" };
+const busyButton = {
+  ...baseButton,
+  background: "linear-gradient(135deg, #9db99f, #b6ccaf)",
+  cursor: "default",
+};
 
 export default function JoinVideoButton({
   kind,

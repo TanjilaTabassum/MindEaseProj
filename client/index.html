@@ -2,9 +2,30 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>client</title>
+
+    <!-- The real mark, built from mindease-logo.png rather than redrawn: the
+         source is cropped to the mark's own bounding box before it is scaled,
+         so a 16px tab spends its pixels on the logo instead of on the empty
+         padding down either side of the original. favicon.ico carries 16, 32
+         and 48 for the tab, the bookmark bar and a desktop shortcut. -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#f3f8ed" />
+
+    <title>MindEase — A quiet place to begin</title>
+    <meta
+      name="description"
+      content="MindEase connects you with trained volunteers and certified psychologists — anonymously, at your pace."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div id="root"></div>

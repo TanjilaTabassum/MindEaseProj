@@ -229,7 +229,16 @@ describe('MindEase T18.13 / T18.14 E2E - BL-18 video buttons (Selenium)', functi
         token: tokens.volunteer,
       });
       const list = psychologists.body?.psychologists || psychologists.body?.data || [];
-      const target = Array.isArray(list) ? list[0] : null;
+      // Escalate to the psychologist this suite actually signs in as, not to
+      // whoever happens to come back first. Once a second approved
+      // psychologist existed in the shared database, taking list[0] handed
+      // the case to the wrong person and every accept came back 403 "this
+      // case is not assigned to you" - which skipped four specs for a
+      // reason that had nothing to do with the code under test.
+      const wanted = String(ACCOUNTS.psychologist.email).toLowerCase();
+      const target = Array.isArray(list)
+        ? list.find((p) => String(p.email).toLowerCase() === wanted) || list[0]
+        : null;
       if (!target) throw new Error('no psychologist available to escalate to');
 
       const escalated = await api('/api/escalations', {
