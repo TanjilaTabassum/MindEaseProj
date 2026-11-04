@@ -21,13 +21,18 @@ const MAGNET_SELECTOR = [
   ".me-app .me-magnetic",
 ].join(", ");
 
-// `.me-card` and `article` are the components written for this layer; the
-// `[style*=...]` selector catches the inline-styled panels on the older
-// pages (see theme.css for why that string matches).
+// Card-sized surfaces only.
+//
+// Tilting the big inline-styled page panels as well looked right in a still
+// screenshot and was wrong in use: the pointer is inside one of those almost
+// all the time, so their text sat under a permanent rotateX/rotateY and the
+// browser resampled it on every frame. It read as badly blurred body copy.
+// A tilt belongs to something you can see the edges of.
 const TILT_SELECTOR = [
   ".me-app .me-card",
   ".me-app article",
-  '.me-app [style*="background-color: rgb(255, 255, 255)"]',
+  '.me-app [data-testid^="stat-"]',
+  '.me-app [data-testid^="report-"]',
 ].join(", ");
 
 const MAGNET_RADIUS = 100;

@@ -217,11 +217,17 @@ export default function Home() {
       {/* -------------------------------------------------------- features */}
       <section style={{ ...section, padding: "40px 24px 100px" }}>
         <div style={{ maxWidth: "1060px", margin: "0 auto" }}>
+          {/* me-pool: the heading and its line sit on the open field, with
+              leaves drifting behind them */}
+          <div
+            className="me-pool"
+            style={{ maxWidth: "760px", margin: "0 auto 44px", padding: "30px 26px" }}
+          >
           <Reveal>
             <h2
               style={{
                 fontSize: "clamp(1.6rem, 3.4vw, 2.3rem)",
-                fontWeight: 300,
+                fontWeight: 400,
                 letterSpacing: "-0.01em",
                 textAlign: "center",
                 margin: "0 0 12px",
@@ -237,13 +243,14 @@ export default function Home() {
                 textAlign: "center",
                 color: c.soft,
                 maxWidth: "520px",
-                margin: "0 auto 56px",
+                margin: "0 auto",
                 lineHeight: 1.7,
               }}
             >
               Three things we got right before anything else.
             </p>
           </Reveal>
+          </div>
 
           <div
             style={{
@@ -298,14 +305,16 @@ export default function Home() {
 
       {/* ----------------------------------------------------------- steps */}
       <section style={{ ...section, padding: "0 24px 110px" }}>
-        <div style={{ maxWidth: "860px", margin: "0 auto" }}>
+        {/* me-pool: this block is text straight onto the drifting field, and
+            leaves passing through the letters made it hard to read. */}
+        <div className="me-pool" style={{ maxWidth: "860px", margin: "0 auto" }}>
           <Reveal>
             <h2
               style={{
                 fontSize: "clamp(1.5rem, 3vw, 2rem)",
-                fontWeight: 300,
+                fontWeight: 400,
                 textAlign: "center",
-                margin: "0 0 56px",
+                margin: "0 0 48px",
                 color: c.ink,
               }}
             >

@@ -25,7 +25,7 @@
   --me-font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
   --me-font-body: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  --me-glass: rgba(255, 255, 255, 0.55);
+  --me-glass: rgba(255, 255, 255, 0.68);
   --me-glass-line: rgba(47, 107, 58, 0.14);
   --me-shadow-soft: 0 22px 50px -32px rgba(32, 72, 44, 0.55);
 }
@@ -96,10 +96,25 @@ body {
 }
 
 /* The dashboards carry dense text over the same drifting field, so their
-   panels sit a little more opaque than the public pages'. */
+   panels sit a good deal more opaque than the public pages'. Reading a table
+   through moving leaves is not a trade worth making. */
 .me-app-dashboard [style*="background-color: rgb(255, 255, 255)"],
 .me-app-dashboard [style*="background: rgb(255, 255, 255)"] {
-  background-color: rgba(255, 255, 255, 0.66) !important;
+  background-color: rgba(255, 255, 255, 0.82) !important;
+}
+
+/* ------------------------------------------------------ muted text rescue */
+
+/* The pages lean on two very light greys for secondary text. On the flat
+   white they were written against those were fine; over a translucent panel
+   with a drifting field behind it they wash out. Same matching trick as the
+   panels - restate them darker, and a little greener so they belong. */
+.me-app [style*="color: rgb(113, 128, 150)"] {
+  color: #4d5d54 !important;
+}
+
+.me-app [style*="color: rgb(160, 174, 192)"] {
+  color: #64756a !important;
 }
 
 /* ------------------------------------------------------------ navigation */
@@ -157,7 +172,7 @@ body {
 .me-app .sidebar-title {
   font-family: var(--me-font-body);
   letter-spacing: 0.16em;
-  color: rgba(47, 107, 58, 0.5);
+  color: rgba(47, 107, 58, 0.66);
   font-weight: 600;
 }
 
@@ -312,7 +327,7 @@ body {
 }
 
 .me-app ::placeholder {
-  color: rgba(91, 107, 97, 0.55);
+  color: rgba(77, 93, 84, 0.72);
 }
 
 /* ---------------------------------------------------------------- tables */
@@ -418,6 +433,32 @@ body {
 .me-app [style*="color: rgb(79, 70, 229)"]:not([style*="background"]),
 .me-app [style*="color: rgb(0, 123, 255)"]:not([style*="background"]) {
   color: var(--me-green) !important;
+}
+
+/* --------------------------------------------------------- reading pools */
+
+/* Some sections are text on the open background with no panel behind them,
+   and with leaves drifting through the letters they were hard to read. A
+   pool is a wash of light with no edge to it - the text separates from the
+   field without the section turning into another card. */
+.me-app .me-pool {
+  position: relative;
+  border-radius: 32px;
+  padding: 44px 38px;
+  background: radial-gradient(
+    118% 100% at 50% 42%,
+    rgba(255, 255, 255, 0.82),
+    rgba(255, 255, 255, 0.46) 58%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+}
+
+@media (max-width: 640px) {
+  .me-app .me-pool {
+    padding: 32px 20px;
+  }
 }
 
 /* ------------------------------------------------------------------ misc */

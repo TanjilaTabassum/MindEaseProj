@@ -632,25 +632,30 @@ body.me-cursor-active [role="button"] {
 
 /* ----------------------------------------------------- floating surfaces */
 
-/* Each loop moves on both axes and rolls slightly, so a panel reads as
-   suspended in something rather than riding up and down a rail. */
+/* Each loop moves on both axes, so a panel reads as suspended in something
+   rather than riding up and down a rail.
+
+   These used to roll about half a degree as well, which is where most of the
+   reported blur came from: a rotated layer has its text resampled every
+   frame, and on a panel of body copy that is plainly visible. Translation
+   alone does not resample, so the float stays and the text stays sharp. */
 @keyframes me-float-a {
-  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
-  33%  { transform: translate3d(5px, -16px, 0) rotate(0.5deg); }
-  66%  { transform: translate3d(-4px, -8px, 0) rotate(-0.4deg); }
-  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  0%   { transform: translate3d(0, 0, 0); }
+  33%  { transform: translate3d(5px, -16px, 0); }
+  66%  { transform: translate3d(-4px, -8px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
 }
 @keyframes me-float-b {
-  0%   { transform: translate3d(0, -6px, 0) rotate(-0.3deg); }
-  40%  { transform: translate3d(-6px, 10px, 0) rotate(0.45deg); }
-  75%  { transform: translate3d(4px, -4px, 0) rotate(-0.2deg); }
-  100% { transform: translate3d(0, -6px, 0) rotate(-0.3deg); }
+  0%   { transform: translate3d(0, -6px, 0); }
+  40%  { transform: translate3d(-6px, 10px, 0); }
+  75%  { transform: translate3d(4px, -4px, 0); }
+  100% { transform: translate3d(0, -6px, 0); }
 }
 @keyframes me-float-c {
-  0%   { transform: translate3d(0, 8px, 0) rotate(0.35deg); }
-  45%  { transform: translate3d(7px, -12px, 0) rotate(-0.5deg); }
-  80%  { transform: translate3d(-3px, 3px, 0) rotate(0.25deg); }
-  100% { transform: translate3d(0, 8px, 0) rotate(0.35deg); }
+  0%   { transform: translate3d(0, 8px, 0); }
+  45%  { transform: translate3d(7px, -12px, 0); }
+  80%  { transform: translate3d(-3px, 3px, 0); }
+  100% { transform: translate3d(0, 8px, 0); }
 }
 
 /* Cards, panels and tiles drift on long, offset loops so the page never
@@ -717,10 +722,10 @@ body.me-cursor-active [role="button"] {
 /* ------------------------------------------------------ floating buttons */
 
 @keyframes me-float-btn {
-  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
-  35%  { transform: translate3d(2px, -8px, 0) rotate(0.5deg); }
-  70%  { transform: translate3d(-2px, -3px, 0) rotate(-0.4deg); }
-  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  0%   { transform: translate3d(0, 0, 0); }
+  35%  { transform: translate3d(2px, -8px, 0); }
+  70%  { transform: translate3d(-2px, -3px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
 }
 
 .me-app a[class*="btn"],
@@ -797,9 +802,12 @@ body.me-cursor-active [role="button"] {
   animation: me-page-in 0.7s var(--me-ease) both;
 }
 
+/* The blur here is deliberately shallow. At 6px the first frames of every
+   navigation looked like the page had failed to render rather than like it
+   was arriving. */
 @keyframes me-page-in {
-  from { transform: translate3d(0, 18px, 0) scale(0.993); filter: blur(6px) opacity(0.25); }
-  to   { transform: translate3d(0, 0, 0) scale(1); filter: blur(0) opacity(1); }
+  from { transform: translate3d(0, 16px, 0); filter: blur(2.5px) opacity(0.3); }
+  to   { transform: translate3d(0, 0, 0); filter: blur(0) opacity(1); }
 }
 
 /* ----------------------------------------------------- magnetic + tilt */
@@ -820,11 +828,11 @@ body.me-cursor-active [role="button"] {
    made the signed-in half of the product look like a different, flatter
    application than the one people arrive at. */
 .me-app-dashboard .me-particles {
-  opacity: 0.82;
+  opacity: 0.55;
 }
 
 .me-app-dashboard .me-ambient {
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 .me-app-dashboard .dashboard-content,

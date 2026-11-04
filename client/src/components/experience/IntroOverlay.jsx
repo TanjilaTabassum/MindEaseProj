@@ -68,8 +68,26 @@ export default function IntroOverlay({ onDone }) {
     []
   );
 
+  // The overlay only holds the page still while it is both playing and on the
+  // route it belongs to. Leaving either condition out of this is what froze
+  // the page's scroll; see the note on the effect below.
+  const active = show && isEntry;
+
+  // `finish` has to be stable. When it closed over `leaving` its identity
+  // changed the moment it ran, which re-ran the effect below - and that
+  // effect's cleanup clears every pending timer, including the one `finish`
+  // had just set to unmount the overlay. So the overlay never unmounted, the
+  // effect never cleaned up, and `body { overflow: hidden }` stayed on: the
+  // home page looked finished but would not scroll. Walking to the dashboard
+  // unmounted the component and released it, which is why scrolling started
+  // working after a round trip.
+  const leavingRef = useRef(false);
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
+
   const finish = useCallback(() => {
-    if (leaving) return;
+    if (leavingRef.current) return;
+    leavingRef.current = true;
     setLeaving(true);
     try {
       sessionStorage.setItem(SESSION_KEY, "1");
@@ -78,14 +96,18 @@ export default function IntroOverlay({ onDone }) {
     }
     const t = setTimeout(() => {
       setShow(false);
-      if (onDone) onDone();
+      if (onDoneRef.current) onDoneRef.current();
     }, LEAVE_MS);
     timers.current.push(t);
-  }, [leaving, onDone]);
+  }, []);
 
   useEffect(() => {
-    if (!show) {
-      if (onDone) onDone();
+    if (!active) {
+      // The second path to the same frozen scroll: someone who clicked a nav
+      // link during the intro left the home route, so this rendered nothing -
+      // but `show` was still true, so the effect never tore down and the
+      // About page inherited a locked body. Keying on `active` covers it.
+      if (onDoneRef.current) onDoneRef.current();
       return undefined;
     }
 
@@ -107,9 +129,21 @@ export default function IntroOverlay({ onDone }) {
       timers.current.forEach(clearTimeout);
       timers.current = [];
     };
-  }, [show, finish, onDone]);
+  }, [active, finish]);
 
-  if (!show || !isEntry) return null;
+  // Belt and braces: whatever happens above, an unmounting overlay never
+  // leaves the page unable to scroll. Only undoes our own lock, so it cannot
+  // unlock a modal that put the body into the same state for its own reasons.
+  useEffect(
+    () => () => {
+      if (document.body.style.overflow === "hidden") {
+        document.body.style.overflow = "";
+      }
+    },
+    []
+  );
+
+  if (!active) return null;
 
   return (
     <div
