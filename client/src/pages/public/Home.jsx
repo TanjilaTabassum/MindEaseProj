@@ -149,7 +149,7 @@ export default function Home() {
             }}
           >
             MindEase connects you with trained volunteers and certified
-            psychologists &mdash; anonymously, at your pace, whenever you are ready.
+            psychologists, anonymously, at your pace, whenever you are ready.
           </p>
 
           <div
