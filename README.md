@@ -78,12 +78,18 @@ Optional keys:
 | `VITE_SOCKET_URL` (in `client/.env`) | chat socket URL | `http://localhost:5000` |
 | `JITSI_DOMAIN` | BL-18 video rooms | `meet.jit.si` |
 | `VIDEO_ROOM_SECRET` | BL-18 video rooms, salts the room name | a constant in the repo |
+| `SSLC_STORE_ID` | BL-17 paid workshops, SSLCommerz sandbox store id | none (payment fails without it) |
+| `SSLC_STORE_PASSWD` | BL-17 paid workshops, SSLCommerz sandbox store password | none (payment fails without it) |
+| `BACKEND_URL` | SSLCommerz redirects back to this address after payment, e.g. `http://localhost:5000` | none |
+| `FRONTEND_URL` | where the browser lands after payment, e.g. `http://localhost:5173` | none |
 
 > **`VIDEO_ROOM_SECRET` must be the same on every machine.** A video room name
 > is derived from the workshop or case id *and* this salt, so two people running
 > their own backend with different salts would compute two different room names
 > and end up in two different empty calls. Use the shared value from the team
 > `.env`, the same way `CHAT_KEY` is shared.
+
+> **Paid workshops (SSLCommerz sandbox):** the `SSLC_*` values are sandbox credentials and are shared privately with the team, like `CHAT_KEY`. Paid workshops cannot be enrolled in without them. Free workshops and everything else work without them.
 
 Check that Git is ignoring the file. `git status` must **not** list `.env`.
 
@@ -192,7 +198,8 @@ Thunder Client collections are in `docs/thunder-client/`. Import them in VS Code
 | Server says it can't find settings / `undefined` values | The file must be named exactly `.env` (not `.env.txt`, and not named after its first line) and placed in `server/`. |
 | `git status` shows `package-lock.json` modified after installing | Run `git restore client/package-lock.json server/package-lock.json`. Use `npm ci` next time. |
 | `code: command not found` (macOS) | In VS Code: *Cmd+Shift+P → "Shell Command: Install 'code' command in PATH"*, then reopen Terminal. |
+| `Port 5173 is in use, trying another one` (Windows or macOS) | An old frontend is still running. The backend only allows port 5173, so stop the old one (Ctrl+C in its window, or `taskkill /IM node.exe /F` on Windows) and start the frontend again. |
 
 ---
 
-*Setup guide tested on macOS (Apple Silicon), Node 22. Sprint 5, task C5.9.*
+*Setup guide tested on macOS (Apple Silicon), Node 22, and on a fresh Windows clone on 4 November 2026 (Sprint 5, task C5.9).*
