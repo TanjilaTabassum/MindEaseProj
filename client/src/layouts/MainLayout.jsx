@@ -2,7 +2,6 @@ import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer";
 import AmbientBackground from "../components/experience/AmbientBackground";
-import PointerEffects from "../components/experience/PointerEffects";
 import IntroOverlay from "../components/experience/IntroOverlay";
 import "../styles/experience.css";
 import "../styles/tw-compat.css";
@@ -20,7 +19,6 @@ export default function MainLayout() {
   return (
     <div className="main-layout me-app me-public">
       <AmbientBackground />
-      <PointerEffects />
       <IntroOverlay />
 
       <Navbar />

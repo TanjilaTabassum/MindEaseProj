@@ -2,7 +2,6 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Navbar from "../components/common/Navbar";
 import Sidebar from "../components/common/Sidebar";
 import AmbientBackground from "../components/experience/AmbientBackground";
-import PointerEffects from "../components/experience/PointerEffects";
 import "../styles/experience.css";
 import "../styles/tw-compat.css";
 import "../styles/theme.css";
@@ -25,7 +24,6 @@ export default function DashboardLayout() {
   return (
     <div className="dashboard-layout me-app me-app-dashboard">
       <AmbientBackground />
-      <PointerEffects />
 
       <Navbar />
       <div className="dashboard-body">

@@ -838,17 +838,6 @@ body.me-intro-running .navbar-brand {
   to   { transform: translate3d(0, 0, 0); filter: blur(0) opacity(1); }
 }
 
-/* ----------------------------------------------------- magnetic + tilt */
-
-.me-magnetic {
-  transition: transform 0.45s var(--me-ease);
-}
-
-.me-tilt {
-  transform-style: preserve-3d;
-  transition: transform 0.5s var(--me-ease);
-}
-
 /* ------------------------------------------- dashboards: quieter variant */
 
 /* The dashboards are a working tool, so the field is pulled back a little -
@@ -882,9 +871,7 @@ body.me-intro-running .navbar-brand {
   .me-app [style*="background-color: rgb(255, 255, 255)"],
   .me-app [style*="background: rgb(255, 255, 255)"],
   .me-app [style*="background-color: rgb(247, 250, 248)"],
-  .me-app a[style*="rgb(47, 133, 90)"],
-  .me-magnetic,
-  .me-tilt {
+  .me-app a[style*="rgb(47, 133, 90)"] {
     animation: none !important;
     transform: none !important;
     transition: none !important;
