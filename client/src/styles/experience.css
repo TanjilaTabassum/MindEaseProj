@@ -33,80 +33,6 @@
   --me-y: 40%;
 }
 
-/* ------------------------------------------------------------------ cursor */
-
-/* Only hide the real cursor when we have actually mounted ours, so a touch
-   device or a reduced-motion visitor never ends up with no cursor at all. */
-body.me-cursor-active,
-body.me-cursor-active a,
-body.me-cursor-active button,
-body.me-cursor-active input,
-body.me-cursor-active select,
-body.me-cursor-active textarea,
-body.me-cursor-active [role="button"] {
-  cursor: none;
-}
-
-.me-cursor-dot,
-.me-cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 9999;
-  border-radius: 50%;
-  will-change: transform;
-}
-
-.me-cursor-dot {
-  width: 7px;
-  height: 7px;
-  margin: -3.5px 0 0 -3.5px;
-  background: var(--me-green-deep);
-  transition: width 0.25s var(--me-ease), height 0.25s var(--me-ease),
-    margin 0.25s var(--me-ease), opacity 0.25s var(--me-ease);
-}
-
-/* The ring lags behind the dot. That lag is most of the "calm" feeling:
-   the pointer leads, the ring eases after it rather than tracking exactly. */
-.me-cursor-ring {
-  width: 34px;
-  height: 34px;
-  margin: -17px 0 0 -17px;
-  border: 1.5px solid rgba(75, 158, 75, 0.55);
-  background: rgba(141, 198, 63, 0.07);
-  transition: width 0.35s var(--me-ease), height 0.35s var(--me-ease),
-    margin 0.35s var(--me-ease), background-color 0.35s var(--me-ease),
-    border-color 0.35s var(--me-ease), opacity 0.3s var(--me-ease);
-}
-
-/* over something clickable */
-.me-cursor-ring.is-hover {
-  width: 58px;
-  height: 58px;
-  margin: -29px 0 0 -29px;
-  background: rgba(141, 198, 63, 0.16);
-  border-color: rgba(47, 107, 58, 0.5);
-}
-
-.me-cursor-dot.is-hover {
-  width: 4px;
-  height: 4px;
-  margin: -2px 0 0 -2px;
-}
-
-.me-cursor-ring.is-down {
-  width: 26px;
-  height: 26px;
-  margin: -13px 0 0 -13px;
-  background: rgba(141, 198, 63, 0.3);
-}
-
-.me-cursor-dot.is-hidden,
-.me-cursor-ring.is-hidden {
-  opacity: 0;
-}
-
 /* --------------------------------------------------------------- ambient */
 
 .me-ambient {
@@ -696,18 +622,6 @@ body.me-intro-running .navbar-brand {
   }
 }
 
-/* No custom cursor on a touch screen: there is no pointer to replace. */
-@media (hover: none), (pointer: coarse) {
-  .me-cursor-dot,
-  .me-cursor-ring {
-    display: none !important;
-  }
-  body.me-cursor-active,
-  body.me-cursor-active * {
-    cursor: auto !important;
-  }
-}
-
 /* ------------------------------------------------------------ cards */
 
 .me-card {
@@ -743,13 +657,6 @@ body.me-intro-running .navbar-brand {
    is never moving at the moment you go for it. Inputs and tables never
    float at all.
    ====================================================================== */
-
-.me-particles {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
 
 /* ----------------------------------------------------- floating surfaces */
 
@@ -931,27 +838,12 @@ body.me-intro-running .navbar-brand {
   to   { transform: translate3d(0, 0, 0); filter: blur(0) opacity(1); }
 }
 
-/* ----------------------------------------------------- magnetic + tilt */
-
-.me-magnetic {
-  transition: transform 0.45s var(--me-ease);
-}
-
-.me-tilt {
-  transform-style: preserve-3d;
-  transition: transform 0.5s var(--me-ease);
-}
-
 /* ------------------------------------------- dashboards: quieter variant */
 
 /* The dashboards are a working tool, so the field is pulled back a little -
    but only a little. Turning it down to a whisper, as the first pass did,
    made the signed-in half of the product look like a different, flatter
    application than the one people arrive at. */
-.me-app-dashboard .me-particles {
-  opacity: 0.55;
-}
-
 .me-app-dashboard .me-ambient {
   opacity: 0.85;
 }
@@ -965,10 +857,6 @@ body.me-intro-running .navbar-brand {
 /* ---------------------------------------------------------- reduced motion */
 
 @media (prefers-reduced-motion: reduce) {
-  .me-particles {
-    display: none !important;
-  }
-
   .me-page {
     animation: none !important;
   }
@@ -983,9 +871,7 @@ body.me-intro-running .navbar-brand {
   .me-app [style*="background-color: rgb(255, 255, 255)"],
   .me-app [style*="background: rgb(255, 255, 255)"],
   .me-app [style*="background-color: rgb(247, 250, 248)"],
-  .me-app a[style*="rgb(47, 133, 90)"],
-  .me-magnetic,
-  .me-tilt {
+  .me-app a[style*="rgb(47, 133, 90)"] {
     animation: none !important;
     transform: none !important;
     transition: none !important;
