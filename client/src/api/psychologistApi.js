@@ -209,12 +209,17 @@ export const getCasePrivateNotes = async (caseId) => {
       getAuthHeaders()
     );
 
-    const notesList = response.data?.data || response.data || [];
+    // the server answers { count, notes: [{ text, ... }] }; the page reads
+    // `noteText`, so expose both names for each note
+    const raw = response.data?.notes || response.data?.data || response.data || [];
+    const notesList = Array.isArray(raw)
+      ? raw.map((n) => ({ ...n, noteText: n.noteText ?? n.text }))
+      : [];
 
     return {
       success: true,
-      data: Array.isArray(notesList) ? notesList : [],
-      count: Array.isArray(notesList) ? notesList.length : 0,
+      data: notesList,
+      count: notesList.length,
       timestamp: new Date().toISOString(),
     };
   } catch (error) {
@@ -243,10 +248,8 @@ export const addCasePrivateNote = async (caseId, noteText) => {
   }
 
   try {
-    const payload = {
-      noteText: noteText.trim(),
-      createdAt: new Date().toISOString(),
-    };
+    // the server reads the note from `text` and stamps createdAt itself
+    const payload = { text: noteText.trim() };
 
     const response = await axios.post(
       `${API_BASE_URL}/psychologist/cases/${caseId}/notes`,
