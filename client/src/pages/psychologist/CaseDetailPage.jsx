@@ -15,6 +15,12 @@ import JoinVideoButton from '../../components/video/JoinVideoButton';
 const unwrapCase = (data) => data?.case || data || null;
 const caseStatusOf = (data) => String(unwrapCase(data)?.status || '').toLowerCase();
 const caseIdOf = (data) => unwrapCase(data)?._id || null;
+// the server stores the volunteer's handover as `summary`
+const handoverOf = (data) => {
+  const c = unwrapCase(data);
+  return c?.summary || c?.handoverSummary || '';
+};
+const volunteerNameOf = (data) => unwrapCase(data)?.volunteer?.name || '';
 
 const CaseDetailPage = () => {
   const { caseId } = useParams();
@@ -165,7 +171,7 @@ const CaseDetailPage = () => {
             ← Back to Case Directory
           </button>
           <span className="text-xs text-slate-400 font-mono bg-white px-3 py-1 rounded-lg border border-slate-200">
-            Case Ref: {caseData?._id}
+            Case Ref: {caseIdOf(caseData)}
           </span>
         </div>
 
@@ -232,16 +238,16 @@ const CaseDetailPage = () => {
               <p className="text-sm font-bold text-slate-800">{caseData?.seeker?.name || 'Anonymous'}</p>
               <p className="text-slate-600">Email Contact: <strong className="text-slate-800">{caseData?.seeker?.email || 'N/A'}</strong></p>
               <p className="text-slate-600">Preferred Language: <strong className="text-slate-800">{caseData?.seeker?.language || 'English'}</strong></p>
-              <p className="text-slate-600">First Contacted: <strong className="text-slate-800">{new Date(caseData?.createdAt || Date.now()).toLocaleDateString()}</strong></p>
+              <p className="text-slate-600">First Contacted: <strong className="text-slate-800">{new Date(unwrapCase(caseData)?.createdAt || Date.now()).toLocaleDateString()}</strong></p>
             </div>
 
             <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 space-y-2.5">
               <h4 className="font-extrabold text-slate-500 uppercase tracking-wider text-[10px]">Volunteer Handover Summary</h4>
               <p className="text-slate-700 italic leading-relaxed bg-white p-3 rounded-xl border border-slate-200">
-                "{caseData?.handoverSummary || 'No preliminary volunteer handover notes recorded for this case.'}"
+                "{handoverOf(caseData) || 'No preliminary volunteer handover notes recorded for this case.'}"
               </p>
               <p className="text-slate-400 text-[11px] pt-1">
-                Handover Volunteer: <strong className="text-slate-600">{caseData?.volunteer?.name || 'System Auto-Assign'}</strong>
+                Handover Volunteer: <strong className="text-slate-600">{volunteerNameOf(caseData) || 'System Auto-Assign'}</strong>
               </p>
             </div>
           </div>
