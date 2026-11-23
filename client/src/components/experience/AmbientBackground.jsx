@@ -4,9 +4,8 @@ import { useEffect, useRef } from "react";
 //
 // Three heavily blurred shapes drift on long loops (26-38s), and a pool of
 // light follows the pointer. The pointer light is driven by the --me-x and
-// --me-y custom properties, which CustomCursor already updates; this component
-// also sets them itself so the background still responds on a page where the
-// custom cursor is not mounted, and recentres them when the pointer leaves.
+// --me-y custom properties, which this component updates as the pointer moves
+// and recentres when the pointer leaves.
 //
 // It sits behind everything at z-index 0 and never takes pointer events.
 
